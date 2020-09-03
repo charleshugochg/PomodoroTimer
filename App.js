@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Text, StatusBar} from 'react-native';
 
 import vibrate from './utils/vibrate.js';
+import KeepAwake from 'react-native-keep-awake';
 
 import ActionButton from './ActionButton.js';
 import Wheel from './Wheel.js';
@@ -69,6 +70,7 @@ export default class App extends React.Component {
         lastAction: 'update',
       }));
     }
+    KeepAwake.activate();
   };
 
   stopCountdown = () => {
@@ -77,6 +79,7 @@ export default class App extends React.Component {
       ...prev,
       isCounting: false,
     }));
+    KeepAwake.deactivate();
   };
 
   resetCountdown = () => {
@@ -111,8 +114,15 @@ export default class App extends React.Component {
     }
   };
 
+  vibrate = (times) => {
+    if (times > 0) {
+      vibrate();
+      setTimeout(() => this.vibrate(times - 1), 1000);
+    }
+  };
+
   onTimeup = () => {
-    vibrate();
+    this.vibrate(3);
     this.toggleState();
   };
 
